@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+<div class="container-fluid bgimg container border fluid mw-100 vh-100">
+    <div class="align-self-center"> 
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="d-flex flex-column bd-highlight mb-3">
+            {% for f in form %}
+                    {% if f.name !='submit' %}
+                    <div class="col-4 p-2 bd-highlight">
+                        {{ f(class_="form-control", size=32) }} 
+                        {% for error in f.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                        {% endfor%} 
+                    </div>
+                    {% else %}
+                    <div class="col-4 p-2 bd-highlight">
+                        {{ form.submit(class="btn btn-primary mb-2") }}
+                    </div>
+                    {% endif %}
+            
+            {% endfor%} 
+            </div>
+        </form>
+    </div>
+
+
+</div>
+
+
+{% endblock %}
+
+
+

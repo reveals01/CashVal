@@ -1,0 +1,67 @@
+.prout{
+  color: green;
+  font-weight: bold;
+}
+
+.bgimg{
+  background-size: cover;
+  background-image: url("../sunrise.jpg");
+  width: 100%;
+  background-repeat:no-repeat;
+}
+
+
+
+.s-titre{
+background-color: #49a5ca;
+border:0 px;
+color: white;
+}
+
+.btn-sml {
+    padding: 0px 5px;
+    border-radius: 4px;
+}
+
+
+
+.calendar{
+    margin-left: -1px ;
+    margin-bottom: -1px ;
+    padding: 0px ;
+    height: 20px;
+    border-radius: 0px;
+    text-align: center;
+    font-size: smaller;
+    font-weight-bold;
+}
+
+.calendar-col{
+    border: 1px solid #49a5ca;
+    width: 12%;
+    border-radius: 0px;
+}
+
+.weekend {
+background: #BBBBBB
+}
+
+.maladie {
+background: #red
+}
+
+.conges {
+background: #49a5ca
+}
+
+.colAbs {
+  display: flex;
+  align-items: center;
+  padding: 0%;
+}
+
+tr.group,
+tr.group:hover {
+    background-color: #ddd !important;
+}
+

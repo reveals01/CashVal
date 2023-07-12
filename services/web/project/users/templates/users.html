@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container border fluid mw-100 vh-100">
+  {% with title="Utilisateurs" %}
+      {% include "title.html" %}
+  {% endwith %}
+    
+  <div class="row" style="height: 5px"></div>
+
+  {% include 'base_users.html' %}
+
+    
+
+  <form method="POST" action="{{ url_for('users.users') }}" id="users">
+    <input type="hidden" id="fname" name="fname" value="SelectAction">
+    <input type="hidden" id="action" name="action" value="">
+    <input type="hidden" id="listId" name="listId" value="">
+  </form>
+    <table class=" table table-striped" id="usersList">
+     
+      <thead>
+        <tr>
+          <th>
+          </th>
+          <th> 
+          </th>
+          <th scope="col">#</th>
+          <th scope="col">Nom</th>
+          <th scope="col">Prenom</th>
+          <th scope="col">Role</th>
+          <th scope="col">Business</th>
+          <th scope="col">email</th>
+          <th scope="col">Date création</th>
+          <th scope="col">Date Modification</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <div class="form-check">
+          {%for user in listUsers %}
+            <tr>
+              <th scope="col">
+                <input class="form-check-input" onchange="onChange(this)"  type="checkbox"  value="{{ user.id}}" id="idUser" name="idUser">
+              </th>
+              <th scope="col">
+                <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary btn-sml dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Action
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                  <li>
+                    <form method="POST" action="/user" id="E_{{ user['id'] }}">
+                      <input type="hidden" id="fname" name="fname" value="Edit">
+                      <input type="hidden" id="idUser" name="idUser" value="{{ user['id'] }}">
+                      <a class="dropdown-item" onclick="document.getElementById('E_{{ user['id'] }}').submit();">Editer</a>
+                    </form>
+                  </li>
+                  <li>
+                    <form method="POST" action="{{ url_for('users.users') }}" id="D_{{ user['id'] }}">
+                      <input type="hidden" id="fname" name="fname" value="Delete">
+                      <input type="hidden" id="idUser" name="idUser" value="{{ user['id'] }}">
+                      <a class="dropdown-item" onclick="document.getElementById('D_{{ user['id'] }}').submit();">Supprimer</a>
+                    </form>
+                  </li>
+                </ul>
+              </th>
+              <th scope="row">{{ user['id'] }}</th>
+              <td>{{ user['name'] }}</td>
+              <td>{{ user['surname'] }}</td>
+              <td>{{ user['role'] }}</td>
+              <td>{{ user['business'] }}</td>
+              <td>{{ user['email'] }}</td>
+              <td>{{ user['createdDateV'] }}</td>
+              <td>{{ user['updatedDateV'] }}</td>
+            </tr>
+          {% endfor %}
+        </div>
+      </tbody>
+    </table>
+  
+  
+</div>
+
+
+
+  {% endblock content%}
+
+  {% block script %}
+  <script>
+  
+  $("div").removeClass("bgimg");
+
+  $(document).ready( function () {
+    $('#usersList').DataTable( {
+    columnDefs: [
+    { orderable: false, targets:[0,1] }
+    ],
+    dom: 'Bfltip',
+    buttons: ['copy', 'csv', 'pdf'],
+    "oSearch": {"sSearch": "{{ selected }}"},
+    
+
+      } );  
+  } );
+  
+  function action(typeOf) {
+    document.getElementById("action").value = typeOf;
+
+    var checkedValue = []; 
+    var inputElements = document.getElementsByName('idUser');
+    for(var i=0; inputElements[i]; ++i){
+      if(inputElements[i].checked){    
+           checkedValue.push(inputElements[i].value.toString());
+          }
+      }
+    document.getElementById("listId").value = checkedValue;
+    document.getElementById('usersList').submit();
+  }
+
+  function onChange(element){
+    var checkedValue = []; 
+    var inputElements = document.getElementsByName('idUser');
+    for(var i=0; inputElements[i]; ++i){
+      if(inputElements[i].checked){    
+           checkedValue.push(inputElements[i].value.toString());
+          }
+      }
+    if (checkedValue.length>0) {
+      document.getElementById("btnGroupDrop1").disabled=false
+    } else {
+      document.getElementById("btnGroupDrop1").disabled=true
+    }
+  }
+
+  function onChangeAll(element){
+      if (document.getElementById("checkboxAll").checked == true)
+        { for (elem of document.getElementsByName("idUser"))
+          {elem.checked = true}}
+      else
+      { for (elem of document.getElementsByName("idUser"))
+          {elem.checked = false}}
+      onChange(element)
+    }
+    
+
+  </script>
+  
+  {% endblock script%}

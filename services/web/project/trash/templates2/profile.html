@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% include 'base_user.html' %}
+
+{% block content %}
+<div class="row center s-titre" style="height:50px ">
+        <div class="col-md-1 "></div>
+        <div class="col-md-6  d-flex align-items-center justify-content-left s-titre">
+            Bienvenue, {{ name }}!
+        </div>
+        <div class="col-md-5 "></div>
+    </div>
+
+
+<div class="row" style="height: 50px">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+
+         <div class="alert alert-danger col-md-12 d-flex align-items-center ">
+                {{ messages[0] }}
+            </div>
+
+        {% endif %}
+    {% endwith %}
+  </div>
+  {{ rcsPassword }}
+<div class="row" style="height: 5px"></div>
+
+<div class="row" style="height: 50px">
+    </div>
+
+
+
+<div class="container">
+    <form method="POST" action="/profile">
+
+
+    <div class="row" style="height: 50px">
+        <div class="col-md-3">Id : </div>
+        <div class="form-group col-md-4">
+            <input type="id" name="id" class="form-control" value="{{ id }}" autofocus="" readonly>
+        </div>
+        <div class="col-md-5"></div>
+    </div>
+       <div class="row" style="height: 50px">
+        <div class="col-md-3">Nom : </div>
+        <div class="form-group col-md-4">
+            <input autofocus="" class="form-control" name="name" type="name" value="{{ name }}">
+        </div>
+        <div class="col-md-5"></div>
+    </div>
+
+    <div class="row" style="height: 50px">
+        <div class="col-md-3">email :</div>
+        <div class="form-group col-md-4">
+            <input type="email" name="email" class="form-control" value="{{ email }}" autofocus="">
+        </div>
+        <div class="col-md-5"></div>
+    </div>
+    <div class="row" style="height: 50px">
+        <div class="col-md-3">mot de passe :</div>
+        <div class="form-group col-md-4">
+            <input type="password" name="password" class="form-control"  value="{{ password }}">
+        </div>
+        <div class="col-md-5"></div>
+    </div>
+
+
+   <div class="row" style="height: 50px">
+        <div class="col-md-3 " ></div>
+        <div class="form-group col-md-4">
+           <button type="submit" class="btn btn-primary mb-2" >Modifier</button>
+        </div>
+        <div class="col-md-5"></div>
+    </div>
+    </form>
+
+</div>
+
+
+
+
+{% endblock %}
+
+
+
+{% block script %}
+<script>
+$("div").removeClass("bgimg");
+</script>
+{% endblock %}
+
+

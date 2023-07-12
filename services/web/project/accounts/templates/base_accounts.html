@@ -1,0 +1,17 @@
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" id='accounts' name='accounts' aria-current="page" href="{{ url_for('accounts.accounts') }}">List</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id='account' name='account' href="{{ url_for('accounts.account') }}">Account</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id='newAccount' name='newAccount' href="{{ url_for('accounts.newAccount') }}">New</a>
+  </li>
+</ul>
+
+<script>
+window.onload = function() {
+document.getElementById('{{ navActive }}').classList.add('active');
+};
+</script>

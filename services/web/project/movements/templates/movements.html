@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container border fluid mw-100 vh-100">
+  
+
+  <div class="row" style="height: 5px"></div>
+
+  <div class="mb-3 input-group">
+    <span class="input-group-text">Select Business:</span>
+    <select id="businessSelect" class="form-select">
+      <option value="">All Businesses</option>
+    </select>
+    <button id="filterButton" class="btn btn-primary">Filter</button>
+  </div>
+
+  
+  <table class=" table table-striped" id="cashMovementTable">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Business</th>
+        <th>Movement Date</th>
+        <th>Sense</th>
+        <th>Account name</th>
+        <th>Bank</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Action</th>
+        <th>User</th>
+        <th>Next User</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%for movement in listMovements %}
+          <tr>
+            <td class='dt-control' data-id="{{ movement.id }}"></td>
+            <td>{{ movement.account.client.business }}</td>
+            <td>{{ movement.movementDateV }}</td>
+            <td>{{ movement.sense }}</td>
+            <td>{{ movement.account.client.key }}</td>
+            <td>{{ movement.account.bankName}}</td>
+            <td>{{ movement.amount}}</td>
+            <td>
+                {% if movement.currentProcess.statusLabel == 'validated' %}
+                  <span class="badge badge-pill bg-success">Validated</span>
+                {% elif movement.currentProcess.statusLabel == 'pending' %}
+                  <span class="badge badge-pill bg-info text-dark">pending</span>
+                
+                {% elif movement.currentProcess.statusLabel == 'to confirm' %}
+                <span class="badge badge-pill bg-warning text-dark">to confirm</span>
+              
+              {% elif movement.currentProcess.statusLabel == 'refused' %}
+              <span class="badge badge-pill bg-danger text-dark">refused</span>
+            {% endif %}
+              </td>
+              <td>
+                {% if movement.currentProcess.statusLabel == 'pending' %}
+                  <button type="button" class="btn-sm btn-primary validate-btn" data-bs-toggle="modal" data-bs-target="#validationModal" data-id="{{ movement.id }}" data-ctrpar="{{ movement.ctrParName }}" data-client="{{ movement.account.client.key }}" data-amount="{{ movement.amount }}" data-business="{{ movement.account.client.business }}">Validate</button>
+                {% endif %}
+              </td>
+            <td>{{ movement.currentProcess.user.name if movement.currentProcess and movement.currentProcess.user else 'none' }}</td>
+            <td>{{ movement.currentProcess.nextUser.name if movement.currentProcess and movement.currentProcess.nextUser else 'none' }}</td>
+    
+          </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+<div class="modal fade" id="validationModal" tabindex="-1" aria-labelledby="validationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="validationModalLabel">Validation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>Movement Details</h6>
+        <div id="movementDetails"></div>
+        <hr>
+        <form id="validationForm">
+          <input type="hidden" id="movementId" name="movementId" value="toto">
+          <div class="mb-3">
+            <label for="comments" class="form-label">Comments:</label>
+            <textarea class="form-control" id="comments" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="fileUpload" class="form-label">File:</label>
+            <input class="form-control" type="file" id="fileUpload">
+          </div>
+          
+          <div class="mb-3">
+            <label for="statusSelect" class="form-label">Status:</label>
+            <select id="statusSelect" class="form-select">
+              <option value="validated">Validated</option>
+              <option value="refused">Refused</option>
+              <option value="to confirm">To confirm</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">OK</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content%}
+
+{% block script %}
+<script>
+  var dict_cashmovements = {};
+
+  {% for movement in listMovements %} 
+    var block='';
+    block = block+'<tr border="1"><td>Counterparty Name: '+ '{{ movement.ctrParName }}'+'</td></tr>'+
+    '<tr border="1"><td>Counterparty IBAN: '+ '{{ movement.ctrParIban }}'+'</td></tr>'+
+    '<tr border="1"><td>Counterparty Country: '+ '{{ movement.ctrParCountry }}'+'</td></tr>'+
+    '<tr border="1"><td>Communication: '+ '{{ movement.communication }}'+'</td></tr>'+
+    '<tr border="1"><td>Amount: '+ '{{ movement.amount }}'+'</td></tr>';
+    
+    dict_cashmovements['{{movement.id}}']=block;
+  {% endfor %}
+
+  function format(id) {
+    return (
+        '<table cellpadding="5" cellspacing="0" border="1" width="100%">' +
+          dict_cashmovements[id] +
+        '</table>'
+    );
+  }
+
+  $(document).ready(function() {
+  // Function to retrieve the list of businesses via AJAX
+  function getBusinesses() {
+    $.ajax({
+      url: "/get-businesses",
+      type: "GET",
+      success: function(data) {
+        var businesses = data.businesses;
+        var select = $("#businessSelect");
+        
+        // Clear previous options
+        select.empty();
+        select.append(new Option("All", "all"));
+        // Populate the select field with businesses
+        businesses.forEach(function(business) {
+          select.append(new Option(business, business));
+        });
+
+        // Add event listener for select field change
+        select.on("change", function() {
+          var selectedBusiness = $(this).val();
+
+          if (selectedBusiness === "all") {
+                table.column(1).search("").draw();
+            } else {
+            table.column(1).search(selectedBusiness).draw();
+            }
+        });
+      },
+      error: function(error) {
+        console.log("Error retrieving businesses:", error);
+      }
+    });
+  }
+
+  // Initialize the datatable
+  var table = $('#cashMovementTable').DataTable({
+    dom: 'Bfltip',
+    buttons: ['copy', 'csv', 'pdf'],
+    columnDefs: [
+      // Column 5: Amount (formatting and alignment)
+      {
+        targets: 6,
+        render: function(data, type, row) {
+          if (type === 'display') {
+            var formattedAmount = parseFloat(data).toLocaleString('en-US', { maximumFractionDigits: 0 });
+            return formattedAmount;
+          }
+          return data;
+        },
+        className: 'text-right'
+      }
+    ],
+    rowGroup: {
+    dataSrc: [1,4] // Index of the column to group by (0-based)
+  }
+  });
+
+  // Call the getBusinesses function to populate the select field
+  getBusinesses();
+  
+  $('#cashMovementTable tbody').on('click', 'td.dt-control', function () {
+      var tr = $(this).closest('tr');
+      var row = table.row(tr);
+      var id = $(this).data('id');  // Obtain the id associated with this row
+
+      if (row.child.isShown()) {
+          row.child.hide();
+          tr.removeClass('shown');
+      } else {
+          row.child(format(id)).show();  // Pass the id to the format function
+          tr.addClass('shown');
+      }
+    });
+});
+
+$(".validate-btn").on("click", function() {
+  
+  var id = $(this).data('id');  // This retrieves the movement id from the button's data-id attribute
+  
+  var ctrpar = $(this).data('ctrpar');
+  var client = $(this).data('client');
+  var amount = $(this).data('amount');
+  var business = $(this).data('business');
+
+  
+  var movementDetails = `
+    <p><strong>Business:</strong> ${business}</p>
+    <p><strong>client:</strong> ${client}</p>
+    <p><strong>Counterparty:</strong> ${ctrpar}</p>
+    <p><strong>Amount:</strong> ${amount}</p>
+  `;
+
+  $("#movementDetails").html(movementDetails);
+  $("#movementId").val(id);
+});
+// Listen for click events on the 'OK' button
+
+$('#validationForm').on('submit', function(event) {
+
+  event.preventDefault();
+
+  formData = {};
+  formData['movementId']=$('#movementId').val();
+  formData['comments']=$('#comments').val();
+  formData['status']=$('#statusSelect').val();
+  // Append the file
+  formData['file']=$('#fileUpload')[0].files[0];
+
+  
+
+  $.ajax({
+    url: "{{ url_for('movements.udpateprocess') }}",
+    type: "POST",
+    datatype:'JSON',
+    data: JSON.stringify(formData),
+    success: function(data) {
+      // handle success
+      $('#validationModal').modal('hide');
+       
+      // Find the row with the specific movement id
+      var row = $('td[data-id="'+ formData['movementId'] +'"]').parent();
+       
+      // Get DataTable API instance of the table
+      var api = $('#cashMovementTable').DataTable();
+
+      // Get the data of the row
+      var rowData = api.row(row).data();
+
+      // Modify the data of the row
+      if (formData['status'] == 'pending') {
+          color = "bg-info";
+      } else if (formData['status'] == 'validated') {
+          color = "bg-success";
+      
+      } else if (formData['status'] == 'to confirm') {
+          color = "bg-warning text-dark";
+      
+      } else {
+        color = "bg-danger";
+      }
+      rowData[7] = '<span class="badge badge-pill '+color+' ">'+formData['status']+'</span>' ;
+      rowData[8] = '';
+      rowData[9] = '{{current_user.name}}';
+      // Update the row data in the table
+      api.row(row).data(rowData).draw();
+
+      },
+    error: function(error) {
+      // handle error
+      alert(error);
+      $('#validationModal').modal('hide');
+      console.log("Error:", error);
+      table.ajax.reload(); 
+    }
+  });
+  
+});
+
+</script>
+{% endblock script %}

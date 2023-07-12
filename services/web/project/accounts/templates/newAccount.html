@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% with title="New Account" %}
+        {% include "title.html" %}
+    {% endwith %}
+    <div class="row" style="height: 5px"></div>
+    {% include 'base_accounts.html' %}
+
+    <div class="d-flex flex-row justify-content-center h-75"> 
+        <div class="d-flex flex-column m-2">
+            <div class="p-2 bd-highlight" style="height: 20px"></div>
+            <div class="p-2 bd-highlight h5">New Account:</div>
+            <div class="p-2 bd-highlight border">
+                {{ form.hidden_tag() }}
+                <form action="" method="post" novalidate>
+                    <div class="p-2 bd-highlight">
+                        {{ form.clientId }} 
+                        {% for error in form.clientId.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                    {% for field in form %}
+                        {% if field.name != 'submit' and field.name != 'clientId' %}
+                        <div class="p-2 bd-highlight ">
+                            {% if field.__dict__['render_kw']['label']  %}
+                                <div class="input-group">
+                                    <span class="input-group-text col-6" id="inputGroup-sizing-default">{{ field.__dict__['render_kw']['label'] }}</span>
+                                    {{ field }} 
+                                </div>
+                            {% else %}
+                                {{ field }} 
+                            {% endif %}
+                            {% for error in field.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                            {% endfor%} 
+                        </div>
+                        {% elif field.name == 'submit' %}
+                            <div class="p-2 float-end bd-highlight">
+                                {{ form.submit(class="btn btn-primary mb-2") }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+

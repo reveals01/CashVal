@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CashVal</title>
+<link href="{{url_for('static', filename='Bootstrap502/dist/css/bootstrap.min.css')}}" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link rel="stylesheet"  href="{{url_for('static', filename='style/own.css')}}" type="text/css" >
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.12.1/af-2.4.0/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/cr-1.5.6/date-1.1.2/fc-4.1.0/fh-3.2.4/kt-2.7.0/r-2.3.0/rg-1.2.0/rr-1.2.8/sc-2.0.7/sb-1.3.4/sp-2.0.2/sl-1.4.0/sr-1.1.1/datatables.min.css"/>
+<!-- dselect -->
+<link rel="stylesheet" href="{{url_for('static', filename='style/dselect.css')}}" />
+
+
+
+
+</head>
+
+
+<body>
+
+<main>
+<div class=" container fluid mw-100 vh-100 m-0 p-0" id="container-base">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light p-1">
+        
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-brand" href="{{ url_for('main.index') }}">
+        <img src="{{url_for('static', filename='logo_AD_2.png')}}" height="50" class="d-inline-block align-top" alt="">
+    </div>
+
+            {% if current_user.is_authenticated %}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <LI><a href="{{ url_for('users.users') }}" class="navbar-item nav-link">Users</a></LI>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Client Management
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('clients.clients') }}">Clients</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('accounts.accounts') }}">Accounts</a></li>
+                        </ul>
+                    </li>
+                    
+          
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Parameter</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">                         
+                        {% for label in distinct_labels %}
+                            <a class="dropdown-item" href="{{ url_for('parameters.parameters',typeLabel=label)}}">{{ label }}</a>
+                        {% endfor %}
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Consultation</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url_for('movements.movements') }}">Cash Movements</a> 
+                        <a class="dropdown-item" href="{{ url_for('movements.dashboard') }}">Dashboard</a>                        
+                    </li>
+
+                    
+                </ul>
+            </div>
+            {% endif %}
+
+
+            {% if not current_user.is_authenticated %}
+            <div class="navbar-nav">
+            <a href="{{ url_for('users.login') }}" class="navbar-item nav-link">
+                Login
+            </a>
+            <a href="{{ url_for('users.newUser') }}" class="navbar-item nav-link">
+                Sign Up
+            </a>
+            </div>
+            {% endif %}
+
+            {% if current_user.is_authenticated %}
+            
+                <span class="navbar-text">
+                    Welcome, {{ current_user.name }}
+                </span>
+           
+
+
+            <a href="{{ url_for('users.logout') }}" class="navbar-item nav-link">
+                Logout
+            </a>
+            {% endif %}
+        
+        
+    </nav>
+
+
+    
+
+        {% block content %}
+        {% endblock %}
+
+</div>
+
+</main>
+
+<script src="{{url_for('static', filename='Bootstrap502/dist/js/bootstrap.bundle.min.js')}}" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.12.1/af-2.4.0/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/cr-1.5.6/date-1.1.2/fc-4.1.0/fh-3.2.4/kt-2.7.0/r-2.3.0/rg-1.2.0/rr-1.2.8/sc-2.0.7/sb-1.3.4/sp-2.0.2/sl-1.4.0/sr-1.1.1/datatables.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+
+<script src="{{url_for('static', filename='js/dselect.js')}}" ></script>
+
+
+
+
+    {% block script %}
+    {% endblock %}
+
+               
+
+</body>
+
+</html>
+

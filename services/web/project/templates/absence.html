@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row center s-titre" style="height:50px ">
+        <div class="col-md-1 "></div>
+        <div class="col-md-6  d-flex align-items-center justify-content-left s-titre">
+            Gestion des absences
+        </div>
+        <div class="col-md-5 "></div>
+    </div>
+
+<div class="row" style="height: 50px">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% if messages[0]=='absence supprimée' %}
+           <div class="alert alert-danger col-md-12 d-flex align-items-center ">
+                {{ messages[0] }}
+            </div>
+    {% else %}
+         <div class="alert alert-success col-md-12 d-flex align-items-center ">
+                {{ messages[0] }}
+            </div>
+            {% endif %}
+        {% endif %}
+    {% endwith %}
+  </div>
+
+<div class="row" style="height: 5px"></div>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="{{ url_for('main.absence') }}">liste</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('main.absence2') }}">Absence</a>
+    </li>
+
+  </ul>
+<div class="row" style="height: 5px"></div>
+
+
+<div class="row">
+    <div class="col-md-1 "></div>
+    <div class="col-md-10 ">
+
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+        <th scope="col">
+            <input class="form-check-input" type="checkbox" id="checkboxAll" name="checkboxAll"  value="" aria-label="...">
+        </th>
+        <th scope="col">
+          <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary btn-sml dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Action
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            <li><a class="dropdown-item" href="#">Envoyer</a></li>
+            <li><a class="dropdown-item" href="#">Supprimer</a></li>
+          </ul>
+      </th>
+        <th scope="col">#</th>
+      <th scope="col">type</th>
+      <th scope="col">date début</th>
+      <th scope="col">date fin</th>
+        <th scope="col">nb jours</th>
+        <th scope="col">statut</th>
+    </tr>
+  </thead>
+  <tbody>
+  {%for absence in absences %}
+    <tr>
+        <th scope="col">
+        <input class="form-check-input" type="checkbox" id="checkbox{{ absence['idAbs'] }}" name="checkbox{{ absence['idAbs'] }}"  value="" aria-label="...">
+        </th>
+             <th scope="col">
+          <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary btn-sml dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+      Action
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+      <li><a class="dropdown-item" href="#">Envoyer</a></li>
+      <li><form method="POST" action="/absence" id="m_{{ absence['idAbs'] }}">
+           <input type="hidden" id="fname" name="fname" value="modifier">
+           <input type="hidden" id="idAbs" name="idAbs" value="{{ absence['idAbs'] }}">
+          <a class="dropdown-item" onclick="document.getElementById('m_{{ absence['idAbs'] }}').submit();">Voir</a></form></li>
+      <li><form method="POST" action="/absence" id="s_{{ absence['idAbs'] }}">
+           <input type="hidden" id="fname" name="fname" value="supprimer">
+           <input type="hidden" id="idAbs" name="idAbs" value="{{ absence['idAbs'] }}">
+          <a class="dropdown-item" onclick="document.getElementById('s_{{ absence['idAbs'] }}').submit();">Supprimer</a></form></li>
+    </ul>
+      </th>
+      <th scope="row">{{ absence['idAbs'] }}</th>
+      <td>{{ absence['type'] }}</td>
+      <td>{{ absence['dateDeb'] }}</td>
+      <td>{{ absence['dateFin'] }}</td>
+        <td>{{ absence['duree'] }}</td>
+        <td>{{ absence['statut'] }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+        </div>
+    <div class="col-md-1 "></div>
+</div>
+
+
+
+
+  {% endblock content%}
+
+{% block script %}
+<script>
+$("div").removeClass("bgimg");
+</script>
+
+{% endblock script%}

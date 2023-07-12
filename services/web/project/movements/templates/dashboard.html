@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container border fluid mw-100 vh-100">
+  {% with title="Overview" %}
+    {% include "title.html" %}
+  {% endwith %}
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <select class="form-select business-select" id="selectBusiness">
+                <option selected>All</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select class="form-select user-select" id="selectNextUser">
+                <option selected>All</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select class="form-select client-select" id="selectClient">
+                <option selected>All</option>
+            </select>
+        </div>
+    </div>
+    <div class="row" style="height: 50px"></div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <!-- Chart goes here -->
+            <canvas id="movementsChart"></canvas>
+            
+        </div>
+        <div class="col-lg-6">
+            <canvas id="userMovementsChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock content%}
+
+{% block script %}
+<script>
+var allMovements = JSON.parse('{{ allMovements | safe }}');
+
+// Dynamically generate select options
+    generateSelectOptions("selectNextUser", allMovements.map(movement => movement.nextUser));
+    generateSelectOptions("selectClient", allMovements.map(movement => movement.client));
+    generateSelectOptions("selectBusiness", allMovements.map(movement => movement.business));
+
+    function generateSelectOptions(selectId, options) {
+        
+        var selectElement = document.getElementById(selectId);
+        var uniqueOptions = [...new Set(options)];
+        
+        for (var i = 0; i < uniqueOptions.length; i++) {
+            var option = document.createElement('option');
+            option.text = uniqueOptions[i];
+            option.value = uniqueOptions[i];
+            selectElement.add(option);
+        }
+}
+
+var chart, userChart;
+
+window.onload = function() {
+    var ctx = document.getElementById('movementsChart').getContext('2d');
+    var ctx2 = document.getElementById('userMovementsChart').getContext('2d');
+
+    const ChartDataLabels = window.ChartDataLabels;
+    Chart.register(ChartDataLabels);
+    const ChartDataLabels2 = window.ChartDataLabels;
+    Chart.register(ChartDataLabels2);
+
+    let nextUsers=Array.from(new Set(allMovements.map(movement => movement.nextUser)));
+    // Pending movements per user
+    
+    let pendingMovementsPerUser = nextUsers.map(user => {
+        // Count the number of pending movements for this user
+        let count = allMovements.filter(movement => movement.statusLabel === 'pending').length;
+        return count;
+        });
+    
+    
+    chart = new Chart(ctx, {
+        // Configuration for the first chart...
+        type: 'bar',
+        data: {
+            labels: ['pending', 'validated','refused','to confirm'],
+            datasets: [{
+                data: [],
+                backgroundColor: [
+                    'rgba(23, 162, 184, 0.9)',
+                    'rgba(40, 167, 69, 1.0)',   // green for Validated
+                    'rgba(220, 53, 69, 0.9)',
+                    'rgba(255, 206, 86, 0.9)'  // amber for Pending
+                    
+                ],
+                borderColor: [
+                'rgba(23, 162, 184, 0.9)',
+                'rgba(40, 167, 69, 1.0)',   // green for Validated
+                'rgba(220, 53, 69, 0.9)',
+                'rgba(255, 206, 86, 0.9)'  // amber for Pending
+                ],
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    display: false,  // Hide y-axis
+                    gridLines: {
+                        drawOnChartArea: false  // No grid lines
+                    }
+                },
+                x: {
+                    gridLines: {
+                        drawOnChartArea: false  // No grid lines
+                    }
+                }
+            },
+            plugins: {
+                datalabels: {
+                    align: 'end',
+                    anchor: 'end',        
+                    
+                    borderRadius: 4,
+                    color: 'black',
+                    formatter: Math.round
+                },
+                title: {
+                    display: false  // No title
+                }
+            },
+            legend: {
+                display: false  // No legend
+            }
+        }
+    });
+    
+    chart2 = new Chart(ctx2, {
+        // Configuration for the first chart...
+        type: 'bar',
+        data: {
+            labels: nextUsers,
+            datasets: [{
+                data: [],
+                backgroundColor: [
+                'rgba(23, 162, 184, 0.9)'  
+                    
+                ],
+                borderColor: [
+                    
+                'rgba(23, 162, 184, 0.9)'
+                ],
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    display: false,  // Hide y-axis
+                    gridLines: {
+                        drawOnChartArea: false  // No grid lines
+                    }
+                },
+                x: {
+                    gridLines: {
+                        drawOnChartArea: false  // No grid lines
+                    }
+                }
+            },
+            plugins: {
+                datalabels: {
+                    align: 'end',
+                    anchor: 'end',        
+                    
+                    borderRadius: 4,
+                    color: 'black',
+                    formatter: Math.round
+                },
+                title: {
+                    display: false  // No title
+                }
+            },
+            legend: {
+                display: false  // No legend
+            }
+        }
+    });
+    
+    // Chart update
+    function updateChart(user, client, business) {
+        
+        var filteredMovements = allMovements;
+        
+        if(user !== "All") {
+            filteredMovements = filteredMovements.filter(movement => movement.nextUser === user);
+        }
+        if(client !== "All") {
+            filteredMovements = filteredMovements.filter(movement => movement.client === client);
+        }
+        if(business !== "All") {
+            filteredMovements = filteredMovements.filter(movement => movement.business === business);
+        }
+        
+        var pending = filteredMovements.filter(movement => movement.statusLabel === 'pending').length;
+        var validated = filteredMovements.filter(movement => movement.statusLabel === 'validated').length;
+        var refused = filteredMovements.filter(movement => movement.statusLabel === 'refused').length;
+        var toconfirm = filteredMovements.filter(movement => movement.statusLabel === 'to confirm').length;
+        chart.data.datasets[0].data = [pending, validated,refused,toconfirm];
+        chart.update();
+
+        let nextUsers=Array.from(new Set(filteredMovements.map(movement => movement.nextUser)));
+        let pendingMovementsPerUser = nextUsers.map(user => {
+        let count = filteredMovements.filter(movement => movement.statusLabel === 'pending' && movement.nextUser === user).length;
+        return count;
+        });
+
+        chart2.data.labels = nextUsers;
+        chart2.data.datasets[0].data = pendingMovementsPerUser;
+        chart2.update();
+        
+
+
+    };
+    // Initial chart update
+    
+    updateChart("All", "All", "All");
+
+       // Update chart when a selection is made
+       document.getElementById('selectNextUser').addEventListener('change', function() {
+        updateChart(this.value, document.getElementById('selectClient').value, document.getElementById('selectBusiness').value);
+    });
+   
+    document.getElementById('selectClient').addEventListener('change', function() {
+        updateChart(document.getElementById('selectNextUser').value, this.value, document.getElementById('selectBusiness').value);
+        
+    });
+    document.getElementById('selectBusiness').addEventListener('change', function() {
+        updateChart(document.getElementById('selectNextUser').value, document.getElementById('selectClient').value, this.value);
+        
+    });
+
+}
+
+    
+
+ 
+    
+    
+</script>
+
+
+{% endblock script%}

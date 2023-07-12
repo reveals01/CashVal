@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% with title="Modification of a Client" %}
+        {% include "title.html" %}
+    {% endwith %}
+    <div class="row" style="height: 5px"></div>
+    {% include 'base_clients.html' %}
+
+<div class="d-flex flex-row justify-content-center  h-75"> 
+    
+    <div class="d-flex flex-column m-2">
+        <div class="p-2 bd-highlight" style="height: 20px"> </div>
+        <div class="p-2 bd-highlight h5">Modify client:</div>
+            <div class="p-2 bd-highlight border"> 
+            <form action="{{ url_for('clients.client') }}"  method="post" > 
+                <input type="hidden" id="fname" name="fname" value="clientSelect">
+                <select class="form-select " name="idClient" id="idClient" aria-label="{{ idClientSelected }}" onchange="this.form.submit()">
+                    {% for client in clientList %}
+                    <option value="{{ client.id }}"  id="client_{{ client.id }}">{{ client.email }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            </div>
+            <div class="p-2 bd-highlight border"> 
+            {{ form.hidden_tag() }}
+                <form action="" method="post" novalidate>
+                    <input type="hidden" id="fname" name="fname" value="clientModify">
+                    {% for f in form %}
+                        {% if f.name !='submit' %}
+                        <div class="p-2 bd-highlight">
+                            {{ f }} 
+                            {% for error in f.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                            {% endfor%} 
+                        </div>
+                        {% else %}
+                        <div class="p-2  float-end  bd-highlight ">
+                            {{ form.submit(class="btn btn-primary mb-2") }}
+                        </div>
+                    
+                        {% endif %}
+                
+                    {% endfor%} 
+                </form>
+            </div>
+    </div>
+
+</div>
+
+<script>
+    window.onload = function() {
+        document.getElementById('client_{{ idClientSelected }}').setAttribute('selected','selected');
+      };
+</script>
+
+{% endblock %}
+
+

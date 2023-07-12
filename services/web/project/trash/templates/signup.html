@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row center s-titre" style="height:50px ">
+        <div class="col-md-1 "></div>
+        <div class="col-md-6  d-flex align-items-center justify-content-left s-titre">
+            Sign up :
+        </div>
+        <div class="col-md-5 "></div>
+    </div>
+
+<div class="row" style="height: 50px">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+        {% if messages[0]=="Utilisateur créé" %}
+            <div class="alert alert-success col-md-12 d-flex align-items-center ">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+
+        {% if messages[0]=="Echec. Adresse email déjà existante"  %}
+            <div class="alert alert-danger col-md-12 d-flex align-items-center ">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+
+  {% endif %}
+  {% endwith %}
+  </div>
+
+
+<div class="row" style="height: 5px"></div>
+<div class="row" style="height: 50px">
+    </div>
+
+
+
+<div class="container">
+        <form method="POST" action="/signup">
+            <div class="row" style="height: 50px">
+                <div class="col-md-3">Email : </div>
+                <div class="form-group col-md-4">
+                    <input class="form-control" type="email" name="email" placeholder="Email" autofocus="">
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            <div class="row" style="height: 50px">
+                <div class="col-md-3">Nom : </div>
+                <div class="form-group col-md-4">
+                    <input class="form-control" type="text" name="name" placeholder="Name" autofocus="">
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            <div class="row" style="height: 50px">
+                <div class="col-md-3">Mot de passe : </div>
+                <div class="form-group col-md-4">
+                    <input class="form-control" type="password" name="password" placeholder="Password">
+                </div>
+                <div class="col-md-5"></div>
+            </div>
+
+            <div class="row" style="height: 50px">
+                <div class="col-md-3"></div>
+                <div class="form-group col-md-4">
+                    <button type="submit" class="btn btn-primary mb-2">Sign Up</button>
+                </div>
+                <div class="col-md-5"></div>
+             </div>
+
+        </form>
+</div>
+
+
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+$("div").removeClass("bgimg");
+</script>
+{% endblock %}

@@ -1,0 +1,31 @@
+<div class="row center s-titre" style="height:50px ">
+    <div class="col-md-1 ">
+    </div>
+    <div class="col-md-6  d-flex align-items-center justify-content-left s-titre">
+        {{ title }}
+    </div>
+    <div class="col-md-5 ">
+    </div>
+</div>
+
+
+<div class="row" style="height: 50px">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+
+    {% for category, message in messages %}
+        {% if category=='error' %}
+            <div class="alert alert-danger col-md-12 d-flex align-items-center ">
+            {{ message }}
+            </div>
+        {% else %}
+            <div class="alert alert-success col-md-12 d-flex align-items-center ">
+            {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    {% endif %}
+    {% endwith %}
+
+</div>

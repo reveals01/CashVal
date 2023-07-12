@@ -1,0 +1,18 @@
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" id='users' name='users' aria-current="page" href="{{ url_for('users.users') }}">List</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id='user' name='user' href="{{ url_for('users.user') }}">User</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id='newUser' name='newUser' href="{{ url_for('users.newUser') }}">New</a>
+    </li>
+</ul>
+
+<script>
+window.onload = function() {
+  document.getElementById('{{ navActive }}').classList.add('active');
+};
+
+</script>

@@ -1,0 +1,107 @@
+﻿idTypeLabel;label
+Type_Produit;AUTOCALL
+Type_Produit;AUTOCALL RESTRUCTURE
+Type_Produit;PHOENIX MÉMOIRE
+Type_Produit;Aucun
+Type_Produit;REVERSE CONVERTIBLE AUTOCALLABLE
+Type_Produit;PARTICIPATION
+Type_Produit;CREDIT LINKED NOTE - CLN
+Type_Produit;REVERSE CONVERTIBLE
+Type_Produit;AUTOCALL OXYGENE
+Type_Produit;AUTOCALL DEGRESSIF
+Type_Produit;AUTOCALL WORST OF DEGRESSIF
+Type_Produit;AUTOCALL OXYGENE DEGRESSIF
+Type_Produit;PHOENIX MÉMOIRE DEGRESSIF
+Type_Produit;AUTOCALL BARRIERE DEGRESSIVE
+Type_Produit;AUTOCALL WORST OF OXYGENE
+Type_Produit;AUTOCALL PUT LEVERAGE
+Type_Produit;AUTOCALL WORST OF OXYGENE DEGRESSIF
+Type_Produit;Autocall Dégressif
+Type_Produit;PHOENIX MÉMOIRE ASSYMETRIQUE
+Type_Produit;PHOENIX A COUPON GARANTI
+Type_Produit;PHOENIX NON MÉMOIRE
+Type_Produit;NON AUTOCALL
+Type_Produit;NON RAPPELABLE A COUPON VARIABLE
+Type_Produit;AUTOCALL WORST OF
+Type_Produit;BEARISH
+Type_Produit;CALLABLE
+Type_Produit;AUTOCALL LOOK BACK
+Type_Produit;DIGITAL
+Type_Produit;TWIN WIN
+Type_Produit;AUTOCALL COUPON + PERFORMANCE
+Type_Produit;AUTOCALL MULTI PERF
+Type_Produit;PHOENIX MÉMOIRE WORST OF
+Type_Produit;AUTOCALL A COUPON PROGRESSIF
+Type_Produit;AUTOCALL BARRIERE PROGRESSIVE
+Type_Produit;PHOENIX
+Type_Produit;AUTOCALL BUDGET
+Type_Produit;PHOENIX MEMOIRE OXYGENE
+Type_Produit;DISPERSION
+Type_Produit2;Club
+Type_Produit2;Restructuration
+Type_Produit2;Aucun
+Type_Produit2;Transfert externe
+Type_Produit2;Campagne
+Type_Cible;Aucun
+Type_Cible;Gestion conseillée BP
+Type_Cible;Gestion discrétionnaire
+Type_Cible;Gestion conseillée BP Lux
+Type_Cible;Gestion discretionnaire
+Type_Cible;Gestion conseillée AM
+Type_Cible;RTO
+Type_Cible;Gestion conseillée BP Bel
+Type_Panier;PANIER EQUIP
+Type_Panier;MONO SUPPORT
+Type_Panier;Aucun
+Type_Panier;WORST OF
+Type_Panier;MULTIPERFS
+Type_Protection;Barrière désactivante (PDI)
+Type_Protection;Non
+Type_Protection;Aucun
+Type_Protection;Put Leveragé
+Type_Protection;PAS DE PROTECTION DU CAPITAL – DELTA 1
+Type_Protection;Capital Partiellement Garanti à Maturité
+Type_Protection;Put striké
+Type_Protection;Oui
+Type_Protection;Capital Garanti à Maturité
+Type_Barriere;Européenne
+Type_Barriere;Américaine
+Type_Barriere;Aucun
+Type_Remuneration;Transactionnel
+Type_Remuneration;Up Front
+Type_Remuneration;Aucun
+Type_Garantie;Capital non-garanti, Coupon incertain
+Type_Garantie;Capital non-garanti, Coupon certain
+Type_Garantie;Capital garanti, Coupon certain
+Type_Garantie;Capital garanti, Coupon incertain
+Emetteur;COMMERZ AG (PS)                                                        
+Emetteur;NATIXIS STRUCTURED ISS SA LUX (PS)                                     
+Emetteur;GOLDMAN SACHS INTL UK/IE (PS)                                          
+Emetteur;BARCLAYS  BANK PLC (PS)                                                
+Emetteur;HSBC BANK PLC (PS)                                                     
+Emetteur; MORGAN STANLEY (PS)                                                   
+Emetteur;BNPPARIBAS (PS)                                                        
+Emetteur;BNPP ARBITRAGE PS                                                      
+Emetteur;SG ISSUER SA LUX (PS)                                                  
+Emetteur;EFG INTL FINANCE GUERNSEY (PS)                                         
+Emetteur;CS LONDON (PS)                                                         
+Emetteur;CITIGROUP GLOB MKTS  FUND LUX (PS)                                     
+Emetteur;CA CIB FIN (PS)                                                        
+Emetteur;GOLDMAN SACHS LONDON                                                   
+Emetteur;SOCIETE GENERALE SA                                                    
+Emetteur;UBS AG LD                                                              
+Emetteur;LEONTEQ                                                                
+Emetteur;BNP PARIBAS ISSUANCE BV                                                
+Emetteur;CANADIAN IMPERIAL BANK OF COMMERCE                                     
+Emetteur;RAIFFEISEN SWITZERLAND BV (PS)                                         
+Emetteur;DB LONDON                                                              
+Emetteur;CREDIT AGRICOLE CIB FIN  (GUERNSEY)                                    
+Emetteur;JP MOR/CHA                                                             
+Emetteur;MERRIL INT                                                             
+Emetteur;SG & SGA                                                               
+Emetteur;LEONTEQ GUERNSEY                                                       
+Manager;Lionel Martin
+Manager;Pascale Schon
+Manager;Minh Nguyen
+Manager;Sandra Cuilliere
+Manager;Abdel Berrih

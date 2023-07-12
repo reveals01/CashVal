@@ -1,0 +1,266 @@
+<div class="container-fluid border min-vh-100"  >
+
+    <div class="row center s-titre" style="height:50px ">
+      <div class="col-md-1 "></div>
+      <div class="col-md-6  d-flex align-items-center justify-content-left s-titre">
+          Client details
+      </div>
+      <div class="col-md-5 "></div>
+    </div>
+  
+  
+    <div class="row" style="height: 50px">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+  
+      <div class="alert alert-success col-md-12 d-flex align-items-center ">
+              {{ messages[0] }}
+          </div>
+  
+      {% endif %}
+    {% endwith %}
+    </div>
+  
+  
+    <div class="row" style="height: 5px"></div>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="{{ url_for('main.extracts') }}">List</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('main.extract') }}">RCS extract details</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('main.newExtracts') }}">New RCS extracts</a>
+      </li>
+    </ul>
+  
+  
+    <div class="row" style="height: 50px"></div>
+  
+    <div class="row border align-items-start vh-100" >
+  
+      <div class="col-6 border" >
+        <div class="col border bg-light py-2 mx-2 my-2 d-flex justify-content-center">LBR ORDER :</div>
+        
+        <form method="POST" action="{{ url_for('main.newUbos') }}">
+          <div class="row align-items-start py-2 mx-2 ">
+            <div class="col border">
+              essai
+            </div>
+            <div class="col-2 border">
+              <button class="btn btn-outline-secondary" type="submit" id="button-addon2" >ORDER</button>
+            </div>
+          </div>
+  
+        </form>
+      </div>
+  
+      <div class="col-6 border">
+        <div class="p border bg-light d-flex py-2 mx-2 my-2  bd-highlight justify-content-center">FILE LOADING :</div>
+          
+        <div class="row align-items-start py-2 mx-2">
+          <div class="col border">
+            <div class="form-group col-md-12  d-flex align-items-center justify-content-start p-0">
+              <input class="form-control border justify-content-start" type="file" id="formFile" name="formFile" placeholder="PDF extract from RCS.lu" value="PDF extract from RCS.lu">
+              <button type="submit" class="btn btn-outline-secondary" name="action" value="delfile">LOAD</button>
+            </div>
+          </div>
+        </div>
+  
+  
+      </div>
+    </div>  
+  </div>       
+
+
+
+
+
+<div class="row center s-titre" style="height:50px ">
+  <div class="col-md-1 "></div>
+  <div class="col-md-6  d-flex align-items-center justify-content-left s-titre">
+      Signalétique société : "{{ client.tradeName }}"
+  </div>
+  <div class="col-md-5 "></div>
+</div>
+
+
+<div class="row" style="height: 50px">
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+
+   <div class="alert alert-success col-md-12 d-flex align-items-center ">
+          {{ messages[0] }}
+      </div>
+
+  {% endif %}
+{% endwith %}
+</div>
+
+<div class="container fluid mw-100 vh-100"></div>
+
+  <div class="row" style="height: 5px"></div>
+  <ul class="nav nav-tabs">
+
+    <li class="nav-item">
+      <a class="nav-link " href="{{ url_for('main.ubos') }}">UBO list</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('main.newUbos') }}">new UBO(s) </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="{{ url_for('main.ubo') }}">UBO details</a>
+    </li>
+  </ul>
+
+  <div class="row" style="height: 5px"></div>
+
+<div class="row">
+    <div class="col-md-1 "></div>
+    <div class="col-md-10 ">
+
+<div class="container">
+
+  
+  <div class="row border" style="height: 50px">
+    <form method="POST" action="/ubo2"></form>
+    <div class="col-2 border">Company :</div>
+      <div class="col-5 border">
+        <input type="hidden" id="fname" name="fname" value="rcsSelect">
+        <select class="form-select" name="rcsnum" id="rcsnum">
+          <option selected >{{ client.idCli }} - {{ client.tradeName }}</option>
+          {% for eachclient in ListClients %}
+              <option value="{{ client.idCli }}">{{ eachclient.idCli }} - {{ eachclient.tradeName }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col border">
+        <button type="submit" class="btn btn-primary mb-2" action="{{ url_for('main.ubo') }}">Select</button>
+      </div>
+   </form>
+  </div>
+
+  <div class="row border" style="height: 50px">
+    <form method="POST" action="/ubo2"></form>
+    <div class="col-2 border">versions :</div>
+      <div class="col-5 border">
+        <input type="hidden" id="fname" name="fname" value="rcsSelect">
+        <select class="form-select" name="rcsnum" id="rcsnum">
+          
+          {% for DateDeb in client.ubos.dateDeb  %}
+              <option value="{{ DateDeb }}">{{ DateDeb }} </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col border">
+        <button type="submit" class="btn btn-primary mb-2" action="{{ url_for('main.ubo') }}">Select</button>
+      </div>
+   </form>
+  </div>
+
+  {% for ubo in client.ubos  %}
+          {{ ubo.firstName }} - {{ ubo.lastName}} 
+  {% endfor %}
+
+
+
+<form method="POST" action="/client">
+
+{% for rbe in client.rbes %}
+
+<div class="accordion" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        <div class="row ">
+          <div class="col-md-1"></div>
+          <div class="form-group col-md-4">
+              First name :<BR>
+              <input type="text" name="surname" class="form-control" value="{{ rbe.firstName  }}" autofocus=""><BR>
+          </div>
+          <div class="form-group col-md-4">
+              Last name :<BR>
+              <input autofocus="" class="form-control" name="ccss" type="text" value="{{ rbe.lastName }}"><BR>
+          </div>
+          <div class="form-group col-md-2">
+            Extraction date :<BR>
+            <input autofocus="" class="form-control" name="ccss" type="text" value="{{ rbe.extractionDate }}"><BR>
+          </div>
+        
+          <div class="col-md-1"></div>
+        </div>
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+      <div class="accordion-body">
+        <div class="row">
+          <div class="col-md-1"></div>
+          <div class="form-group col-md-4">
+              Birth date :<BR>
+              <input autofocus="" class="form-control" name="ccss" type="text" value="{{ rbe.dateBirth }}"><BR>
+          </div>
+          <div class="form-group col-md-4">
+            Country of birth :<BR>
+            <input autofocus="" class="form-control" name="ccss" type="text" value="{{ rbe.placeBirth }}"><BR>
+          </div>
+          <div class="col-md-1"></div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-1"></div>
+        
+          <div class="form-group col-md-4">
+            Nationalities :<BR>
+              <input type="text" name="address" class="form-control" value="{{ rbe.Nationalities  }}" autofocus=""><BR>
+          </div>
+          <div class="form-group col-md-4">
+            Country of residence :<BR>
+            <input autofocus="" class="form-control" name="ccss" type="text" value="{{ rbe.CountryResidence }}"><BR>
+          </div>
+          
+          <div class="col-md-3"></div>
+
+        </div>
+      
+       </div>
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+
+
+
+
+<div class="row d-flex align-items-center " >
+  <div class="col-md-1 d-flex align-items-center" ></div>
+  <div class="form-group col-md-10">
+      <BR>
+     <button type="submit" class="btn btn-primary mb-2"  >Modifier</button>
+     <a class="btn btn-secondary mb-2" href="{{ url_for('main.clients') }}">Retour</a>
+  </div>
+  
+  <div class="col-md-1"></div>
+</div>
+</form>
+
+</div>
+
+
+
+
+{% endblock %}
+
+
+
+{% block script %}
+<script>
+$("div").removeClass("bgimg");
+
+function change() {
+  window.location = "{{ url_for('main.client') }}"+"?"+"rcsnum="+document.getElementById("selectRCS").value
+  
+};
+</script>
+{% endblock %}

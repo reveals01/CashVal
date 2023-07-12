@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+ <div class="row center s-titre" style="height:50px ">
+        <div class="col-md-1 "></div>
+        <div class="col-md-6  d-flex align-items-center justify-content-left s-titre">
+            Création ou modification d'une absence
+        </div>
+        <div class="col-md-5 "></div>
+    </div>
+
+
+<div class="row" style="height: 50px">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+
+         <div class="alert alert-danger col-md-12 d-flex align-items-center ">
+                {{ messages[0] }}
+            </div>
+
+        {% endif %}
+    {% endwith %}
+  </div>
+
+<div class="row" style="height: 5px"></div>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link " aria-current="page" href="{{ url_for('main.absence') }}">Liste</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="{{ url_for('main.absence2') }}">Absence</a>
+    </li>
+
+  </ul>
+
+<div class="row" style="height: 50px">
+    </div>
+
+
+    <form method="POST" action="/absence2" enctype="multipart/form-data">
+        <input hidden name="formName" value="fabsence2" >
+<div class="container">
+    <div class="row" style="width:100%">
+        <div class="col" style="width:50%">
+
+
+
+    <div class="row" style="height: 50px">
+        <div class="col-md-4 colAbs">Id : </div>
+        <div class="form-group col-md-4 colAbs">
+            <input type="id" name="id" class="form-control" value="{{ id }}" autofocus="" readonly>
+            <input  type="hidden" name="idAbs" class="form-control" value="{{ absence['idAbs'] }}">
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+       <div class="row colAbs" style="height: 50px">
+        <div class="col-md-4 colAbs" >type : </div>
+        <div class="form-group col-md-4 colAbs">
+            <select type="type" name="type" class="form-control" autofocus="" selected="{{ absence['type'] }}" >
+                <option>Congés</option>
+                <option>Maladie</option>
+            </select>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+
+    <div class="row" style="height: 50px">
+        <div class="col-md-4 colAbs">Date de début :</div>
+        <div class="form-group col-md-4 date colAbs" data-provide="datepicker">
+            <input type="date" value="{{ absence['dateDeb'] }}" name="dateDeb" id="dateDeb" class="form-control" autofocus="" onblur="calc_d()">
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row  colAbs" style="height: 50px">
+        <div class="col-md-4 colAbs">Date de fin :</div>
+        <div class="form-group col-md-4 date colAbs">
+            <input type="date" value="{{ absence['dateFin'] }}" name="dateFin" id="dateFin" class="form-control"  autofocus="" onblur="calc_d()">
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+        <div class="row colAbs" style="height: 50px">
+        <div class="col-md-4 colAbs">Durée :</div>
+        <div class="form-group col-md-4 float colAbs">
+            <input type="float" value="{{ absence.duree }}" name="duree" id="duree" class="form-control"  autofocus="">
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+
+
+
+
+   <div class="row colAbs" style="height: 50px">
+        <div class="col-md-4 colAbs" ></div>
+        <div class="form-group col-md-4 colAbs">
+           <button type="submit" class="btn btn-primary mb-2" name="action" value="valider">Valider</button>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+   
+   </div>
+        <div class="col" style="width:50%">
+            <div class="row d-flex align-items-center justify-content-start" style="height: 50px">
+                <div class="form-group col-md-12  d-flex align-items-center justify-content-start p-0">
+                <input class="form-control border justify-content-start" type="file" id="formFile" name="formFile" placeholder="fichier justificatif si nécessaire" value="none">
+                
+                </div>
+            </div>
+            {% if( absence['justif'] !='') %}
+            <div class="row d-flex align-items-center" style="height: 60px">    
+                <div class="col p-0 d-flex align-items-center">
+                <img src="{{url_for('static', filename='icone_fichier_1.jpg')}}" height='40px' width='40px'  alt="Card image cap">
+                <span class="card-text"><a href="{{ url_for('main.download', filename=absence['justif'] ) }}">{{ absence['justif'] }}</a></span>
+                </div>
+                <div class="col-md-1 p-0 d-flex align-items-center">
+                <button type="submit" class="btn-sm btn-danger mb-2" name="action" value="delfile">x</button>
+                </div>
+            </div>
+            {% endif %}
+    </div>
+   </div>
+</div>
+</form>
+
+
+
+  {% endblock content%}
+
+{% block script %}
+<script>
+$("div").removeClass("bgimg");
+
+</script>
+
+
+<script>
+function calc_d(){
+    var date1 = new Date(document.getElementById('dateDeb').value);
+    var date2 = new Date(document.getElementById('dateFin').value);
+
+    var Difference_In_Time = date2.getTime() - date1.getTime();
+
+    // To calculate the no. of days between two dates
+    var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+    document.getElementById('duree').value=Difference_In_Days+1;
+
+};
+
+</script>
+
+
+{% endblock script%}

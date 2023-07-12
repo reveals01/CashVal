@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row center s-titre" style="height:50px ">
+        <div class="col-md-1 "></div>
+        <div class="col-md-6  d-flex align-items-center justify-content-left s-titre">
+            Vue d'équipe
+        </div>
+        <div class="col-md-5 "></div>
+    </div>
+
+<div class="row" style="height: 50px">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+         <div class="alert alert-danger col-md-12 d-flex align-items-center ">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+    {% endwith %}
+  </div>
+
+<div class="row" style="height: 5px"></div>
+
+<div class="container" id="tableau" name="tableau">
+{{ users['name']}}
+    </div>
+
+
+
+  {% endblock content%}
+
+{% block script %}
+<script>
+$("div").removeClass("bgimg");
+
+
+
+function getDaysInMonth(month, year) {
+  var date = new Date(year, month, 1);
+  var days = [];
+  while (date.getMonth() === month) {
+    days.push(new Date(date));
+    date.setDate(date.getDate() + 1);
+  }
+  return days;
+}
+
+
+function f(uneDate) {
+if( i == 7) {
+        j=j+1;
+        i=0;
+
+ // dans ce cas on cree une nouvelle serie de lignes :
+        tableau.insertAdjacentHTML('beforeend', '<div class="row calendar", id="row_' + j + '" ></div>');
+        document.getElementById("row_"+j).insertAdjacentHTML('beforeend','<div class ="calendar calendar-col" style="border : 0px">' + ''   + '</div>')
+
+        for (const id of idlist) {
+            tableau.insertAdjacentHTML('beforeend', '<div style="height: 20px" class="row calendar", id="'+ "rowp_"+id+'_'+j +'"></div>');
+            document.getElementById("rowp_"+id+'_'+j).insertAdjacentHTML('beforeend','<div class ="calendar calendar-col" style="border : 1px">' + usersmap[id]   + '</div>');
+        }
+
+        tableau.insertAdjacentHTML('beforeend', '<div style="height: 30px" class="row calendar" style="border : 0px" , id="rowf_' + j + '" ></div>');
+        }
+
+document.getElementById("row_"+j).insertAdjacentHTML('beforeend','<div class ="calendar calendar-col" id="'+uneDate.toLocaleDateString("fr")+'">' + uneDate.toLocaleDateString("fr")  + '</div>')
+for (const id of idlist) {
+  document.getElementById("rowp_"+id+'_'+j).insertAdjacentHTML('beforeend','<div class ="calendar calendar-col" id="p'+id+'_'+uneDate.toLocaleDateString("fr")+'" >' + ' '  + '</div>')
+}
+i=i+1;
+
+}
+
+function f2(uneDate) {
+if (uneDate.getDay() == 6 || uneDate.getDay() == 0) {
+    document.getElementById(uneDate.toLocaleDateString("fr")).classList.add("weekend")
+    for (const id of idlist) {
+            document.getElementById("p"+id+"_"+uneDate.toLocaleDateString("fr")).classList.add("weekend")
+          }
+    }
+}
+
+
+function draw_calendar(uneDate,listU,listC,listM){
+// creation de la ligne entete et des 3 colonnes :
+    tableau.insertAdjacentHTML('beforeend', '<div style="height: 50px" class="row calendar" id="entete"></div>');
+    document.getElementById("entete").insertAdjacentHTML('beforeend', '<div style="height: 50px" class="col-md-2 calendar" id="precedent"> <button onclick="mois_prec()">mois précédent</button> </div>');
+    document.getElementById("entete").insertAdjacentHTML('beforeend', '<div style="height: 50px" id="entete2" class="col calendar">'+(uneDate.getMonth()+1)+'-'+uneDate.getFullYear()+'</div>');
+    document.getElementById("entete").insertAdjacentHTML('beforeend', '<div style="height: 50px" class="col-md-2 calendar" id="suivant"><button onclick="mois_suiv()">mois suivant</button></div>');
+
+    var currentMonth=uneDate.getMonth();
+    var currentYear=uneDate.getFullYear();
+
+// construction de la liste de dates :
+    var listDatesMonth= getDaysInMonth(currentMonth,currentYear);
+    i=7;
+    j=0;
+    listDatesMonth.forEach(f);
+
+// formatage des weekends :
+    listDatesMonth.forEach(f2);
+
+// formatage des conges et maladie :
+    for (const dateC of listC) {
+        if(document.getElementById(dateC))
+            document.getElementById(dateC).classList.add("bg-success");
+    }
+
+    for (const dateM of listM) {
+        if(document.getElementById(dateM))
+        document.getElementById(dateM).classList.add("bg-danger");
+    }
+}
+
+function mois_suiv(){
+today.setMonth(today.getMonth() + 1);
+document.getElementById('tableau').innerHTML = ""
+draw_calendar(today,userslist,abslistConges,abslistMaladie);
+}
+
+function mois_prec(){
+today.setMonth(today.getMonth() - 1);
+document.getElementById('tableau').innerHTML = ""
+draw_calendar(today,userslist,abslistConges,abslistMaladie);
+}
+
+
+
+
+
+// code principal :
+var userslist=[]
+var idlist=[]
+{% for user in users %}
+    userslist.push("{{ user.name }}")
+    idlist.push("{{ user.id }}")
+{% endfor %}
+
+var usersmap = {};
+idlist.forEach((id, i) => usersmap[id] = userslist[i]);
+
+
+var abslistConges=[]
+var abslistMaladie=[]
+{% for absence in absences %}
+    var dateDeb= new Date( "{{ absence.dateDeb }}" );
+    var dateFin= new Date( "{{ absence.dateFin }}" );
+    var dateAbs = dateDeb;
+
+    while(dateAbs<=dateFin){
+        {% if absence.type =="Congés" %}
+            abslistConges.push("p"+"{{ absence.idUser }}"+"_"+dateAbs.toLocaleDateString("fr"));
+        {% endif %}
+        {% if absence.type =="Maladie" %}
+            abslistMaladie.push("p"+"{{ absence.idUser }}"+"_"+dateAbs.toLocaleDateString("fr"));
+        {% endif %}
+
+        dateAbs.setDate(dateAbs.getDate() + 1)
+    }
+{% endfor %}
+
+
+
+const tableau = document.getElementById('tableau');
+var today = new Date();
+var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
+draw_calendar(today,userslist,abslistConges,abslistMaladie);
+
+
+
+
+
+
+</script>
+
+
+{% endblock script%}

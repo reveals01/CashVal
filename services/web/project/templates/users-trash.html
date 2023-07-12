@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container border fluid mw-100 vh-100">
+
+  <div class="row center s-titre" style="height:50px ">
+    <div class="col-md-1 ">
+    </div>
+    <div class="col-md-6  d-flex align-items-center justify-content-left s-titre">
+        Clients
+    </div>
+    <div class="col-md-5 ">
+    </div>
+  </div>
+
+
+  <div class="row" style="height: 50px">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-success col-md-12 d-flex align-items-center ">
+      {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+  </div>
+
+  
+  <div class="row" style="height: 5px"></div>
+
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="{{ url_for('user.users') }}">RCS List</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" aria-current="page" href="{{ url_for('users.user') }}">RCS Orders</a>
+    </li>
+  </ul>
+
+  <div class="row p-2" style="height: 5px"></div>
+
+
+  <table class="table table-striped" id="users">
+    <thead>
+      <tr>
+          <th scope="col">
+              <input class="form-check-input" type="checkbox" id="checkboxAll" onchange="onChangeAll(this)" name="checkboxAll"  value="" aria-label="...">
+          </th>
+          <th scope="col">
+            <button id="btnGroupDrop1" type="button" disabled class="btn btn-primary btn-sml dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              Action
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+  
+            </ul>
+  
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+              <li><a class="dropdown-item" href="#">RBE</a></li>
+              <li><a class="dropdown-item" href="#">RCS</a></li>
+              <li><a class="dropdown-item" href="#">Modify</a></li>
+            </ul>
+        </th>
+          <th scope="col">#</th>
+        <th scope="col">id</th>
+        <th scope="col">Client tradename</th>
+        <th scope="col">RCS Extract</th>
+        <th scope="col">RCS Extract Data</th>
+        <th scope="col">Order date</th>
+        <th scope="col">Order user</th>
+        <th scope="col">Order receipt</th>
+  
+      </tr>
+    </thead>
+    <tbody>
+    {%for elem in ListElems %}
+      <tr>
+  
+        <th scope="col">
+          <input class="form-check-input" type="checkbox" id="clientid" name="clientid"  onchange="onChange(this)" value="{{ elem.id }}" aria-label="...">
+        </th>
+        <th scope="col">
+          <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary btn-sml dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          Action
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            <li>
+              <form method="POST" action="/extract" id="E_{{ elem['idRcsmain'] }}">
+                <input type="hidden" id="fname" name="fname" value="Edit">
+                <input type="hidden" id="idRcsmain" name="idRcsmain" value="{{ elem['idRcsmain'] }}">
+                <a class="dropdown-item" onclick="document.getElementById('E_{{ elem['idRcsmain'] }}').submit();">Details</a>
+              </form>
+            </li>
+            <li>
+              <form method="POST" action="/extracts" id="D_{{ elem['idRcsmain'] }}">
+                <input type="hidden" id="fname" name="fname" value="Delete">
+                <input type="hidden" id="idRcsmain" name="idRcsmain" value="{{ elem['idRcsmain'] }}">
+                <a class="dropdown-item" onclick="document.getElementById('D_{{ elem['idRcsmain'] }}').submit();">Delete</a>
+              </form>
+            </li>
+          </ul>
+        </th>
+    
+  
+        <th scope="row">{{ elem.id }}</th>
+        <td>{{ elem.client.idCli }}</td>
+        <td>{{ elem.client.tradeName }}</td>
+        <td><a href="{{ url_for('main.downloadDB', filename=elem.docs[0]['docName']) }}">PDF document</a></td>
+        <td><a href="{{ url_for('main.downloadDB', filename=elem.docs[1]['docName']) }}">XLS document</a></td>
+        {% if elem.rcsorder  %}
+          <td>{{ elem.rcsorder[0].CreatedDate }}</td>
+          <td>{{ elem.rcsorder[0].user.name}}</td>
+          <td><a href="{{ url_for('main.downloadDB', filename=elem.rcsorder[0].receipt['docName']) }}">{{elem.rcsorder[0].idRcsOrder}}</a></td>
+        {% else %}
+        <td></td>
+        <td></td>
+        <td></td>
+        
+        {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  
+</div>
+
+
+  {% endblock content%}
+
+  {% block script %}
+  <script>
+  $("div").removeClass("bgimg");
+  $(document).ready( function () {
+    $('#extracts').DataTable( {
+    dom: 'Bfltip',
+    buttons: ['copy', 'csv', 'pdf'],
+    "oSearch": {"sSearch": ""}
+      } );  
+  } );
+  function onChange(element){
+    var checkedValue = []; 
+    var inputElements = document.getElementsByName('clientid');
+    for(var i=0; inputElements[i]; ++i){
+      if(inputElements[i].checked){    
+           checkedValue.push(inputElements[i].value.toString());
+          }
+      }
+    if (checkedValue.length>0) {
+      document.getElementById("btnGroupDrop1").disabled=false
+    } else {
+      document.getElementById("btnGroupDrop1").disabled=true
+    }
+  }
+
+  function onChangeAll(element){
+      if (document.getElementById("checkboxAll").checked == true)
+        { for (elem of document.getElementsByName("clientid"))
+          {elem.checked = true}}
+      else
+      { for (elem of document.getElementsByName("clientid"))
+          {elem.checked = false}}
+      onChange(element)
+    }
+  </script>
+  
+  {% endblock script%}

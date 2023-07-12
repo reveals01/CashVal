@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container border fluid mw-100 vh-100">
+  {% with title="Overview" %}
+    {% include "title.html" %}
+  {% endwith %}
+
+  <div class="container">
+    <h1>KPI Dashboard</h1>
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-12">
+                <form action="{{ url_for('movements.kpis') }}" method="GET">
+                    <div class="input-group mb-3">
+                        <select class="form-select" id="businessFilter" name="businessFilter">
+                            <option selected disabled>Choose business...</option>
+                            {% for business in businesses %}
+                            <option value="{{ business.id }}">{{ business.name }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <select class="form-select" id="clientFilter" name="clientFilter">
+                            <option selected disabled>Choose client...</option>
+                            {% for client in clients %}
+                            <option value="{{ client.id }}">{{ client.name }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <select class="form-select" id="bankFilter" name="bankFilter">
+                            <option selected disabled>Choose bank...</option>
+                            {% for bank in banks %}
+                            <option value="{{ bank.id }}">{{ bank.name }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div style="width: 50%; float: left;">
+            <canvas id="chart"></canvas>
+        </div>
+        <div style="width: 50%; float: left;">
+            <canvas id="pendingMovementsChart"></canvas>
+        </div>
+        
+
+
+    
+</div>
+
+
+{% endblock content%}
+
+{% block script %}
+<script>
+    const ChartDataLabels = window.ChartDataLabels;
+    Chart.register(ChartDataLabels);
+    const ctx = document.getElementById('chart').getContext('2d');
+    const statusCounts = {{ kpis.statusCounts | tojson }};
+    const colors = {
+        'validated': 'rgba(40, 167, 69, 0.5)',  // Green (bg-success)
+        'pending': 'rgba(255, 193, 7, 0.5)',  // Amber (bg-warning)
+        // ... add other statuses here ...
+    };
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(statusCounts),
+            datasets: [{
+                label: 'Process Statuses',
+                data: Object.values(statusCounts),
+                backgroundColor: Object.keys(statusCounts).map(status => colors[status]),
+                borderColor: 'rgba(0, 0, 0, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Total Number of Movements: ' + {{ kpis.totalMovements }}
+                },
+                datalabels: {
+                    color: '#000000',
+                    anchor: 'end',
+                    align: 'top',
+                    formatter: Math.round
+                },
+                tooltip: {
+                    enabled: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+
+    let ctx2 = document.getElementById('pendingMovementsChart').getContext('2d');
+    let pendingMovementsChart = new Chart(ctx2, {
+        type: 'horizontalBar',
+        data: {
+            labels: {{ nextUsers | tojson }},
+            datasets: [{
+                data: {{ pendingCounts | tojson }},
+                backgroundColor: 'rgba(255, 206, 86)'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Pending Movements per User'
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+
+{% endblock script%}

@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container border fluid mw-100 vh-100">
+  {% with title="Accounts" %}
+      {% include "title.html" %}
+  {% endwith %}
+    
+  <div class="row" style="height: 5px"></div>
+
+  {% include 'base_accounts.html' %}
+  
+  <div class="row" style="height: 50px"></div> 
+<div class="input-group mb-3">
+    <div class="col-md-1">
+      <label for="groupBy" class="input-group-text">Group by:</label>
+    </div>
+    <div class="col-md-2">
+      <select class="form-select" id="groupBy" >
+        <option value="2">Business</option>
+        <option value="3">Client</option>
+        <option value="4">Bank</option>
+        <option value="5">Currency</option>
+        <option value="6">IBAN</option>
+        <option value="7">Officer</option>
+        <option value="8">Senior Officer</option>
+      </select>
+    </div>
+  </div>
+  
+  
+  
+  <form method="POST" action="{{ url_for('accounts.accounts') }}" id="accounts">
+    <input type="hidden" id="fname" name="fname" value="SelectAction">
+    <input type="hidden" id="action" name="action" value="">
+    <input type="hidden" id="listId" name="listId" value="">
+  </form>
+    <table class=" table table-striped" id="accountsList">
+      <thead>
+        <tr>
+          <th></th>
+          <th scope="col">#</th>
+          <th scope="col">Business</th>
+          <th scope="col">Client</th>
+          <th scope="col">Bank</th>
+          <th scope="col">Currency</th>
+          <th scope="col">IBAN</th>
+          <th scope="col">Officer</th>
+          <th scope="col">Senior Officer</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <div class="form-check">
+          {%for account in listAccounts %}
+            <tr>
+              <th scope="col">
+                <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary btn-sml dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Action
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                  <li>
+                    <form method="POST" action="/account" id="E_{{ account['id'] }}">
+                      <input type="hidden" id="fname" name="fname" value="Edit">
+                      <input type="hidden" id="idAccount" name="idAccount" value="{{ account['id'] }}">
+                      <a class="dropdown-item" onclick="document.getElementById('E_{{ account['id'] }}').submit();">Editer</a>
+                    </form>
+                  </li>
+                  <li>
+                    <form method="POST" action="{{ url_for('accounts.accounts') }}" id="D_{{ account['id'] }}">
+                      <input type="hidden" id="fname" name="fname" value="Delete">
+                      <input type="hidden" id="idAccount" name="idAccount" value="{{ account['id'] }}">
+                      <a class="dropdown-item" onclick="document.getElementById('D_{{ account['id'] }}').submit();">Supprimer</a>
+                    </form>
+                  </li>
+                </ul>
+              </th>
+              <td>{{ account['id'] }}</td>
+              <td>{{ account.client.business }}</td>
+              <td>{{ account.client['key'] }}</td>
+              <td>{{ account['bankName'] }}</td>
+              <td>{{ account['currency'] }}</td>
+              <td>{{ account['iban'] }}</td>
+              <td>{{ account['officer'].name }}</td>
+              <td>{{ account['validator'].name }}</td>
+           
+            </tr>
+          {% endfor %}
+        </div>
+      </tbody>
+    </table>
+</div>
+{% endblock content %}
+
+{% block script %}
+  <script>
+  
+  $("div").removeClass("bgimg");
+
+  var groupByFieldIndex = 2; // column index of 'Client'
+  var table = $('#accountsList').DataTable({
+    columnDefs: [
+      { orderable: false, targets:[0] },
+      { visible: false, targets: groupByFieldIndex } // hide the grouping column
+    ],
+    dom: 'Bfltip',
+    buttons: ['copy', 'csv', 'pdf'],
+    "oSearch": {"sSearch": "{{ selected }}"},
+
+    // use rowGroup for grouping and order for sorting
+    order: [[ groupByFieldIndex, 'asc' ]],
+    rowGroup: {
+        dataSrc: groupByFieldIndex // group by 'Client'
+    }
+  });
+
+  $('#accountsList').on('click', 'th', function() {
+    var table = $('#accountsList').DataTable();
+    var groupByField = $('#groupBy').val();
+    var columnIndex = $(this).index();
+  
+    if(columnIndex != groupByField) {
+        // If the clicked column is not the group by field, do secondary sorting.
+        table
+            .order([groupByField, 'asc'], [columnIndex, 'asc'])
+            .draw();
+    }
+});
+
+  // Event listener for the select field
+  document.getElementById('groupBy').addEventListener('change', function() {
+  var groupByField = parseInt(this.options[this.selectedIndex].value);
+  
+  // Hide all columns first
+  for (var i = 2; i <= 8; i++) {
+    table.column(i).visible(true);
+  }
+  
+  // Set groupBy and hide that column
+  table.rowGroup().dataSrc(groupByField).draw();
+  table.column(groupByField).visible(false);
+  table.order([groupByField, 'asc']).draw();
+});
+  
+  function action(typeOf) {
+    document.getElementById("action").value = typeOf;
+
+    var checkedValue = []; 
+    var inputElements = document.getElementsByName('idAccount');
+    for(var i=0; inputElements[i]; ++i){
+      if(inputElements[i].checked){    
+           checkedValue.push(inputElements[i].value.toString());
+          }
+      }
+    document.getElementById("listId").value = checkedValue;
+    document.getElementById('accounts').submit();
+  }
+
+  function onChange(element){
+    var checkedValue = []; 
+    var inputElements = document.getElementsByName('idAccount');
+    for(var i=0; inputElements[i]; ++i){
+      if(inputElements[i].checked){    
+           checkedValue.push(inputElements[i].value.toString());
+          }
+      }
+    if (checkedValue.length>0) {
+      document.getElementById("btnGroupDrop1").disabled=false
+    } else {
+      document.getElementById("btnGroupDrop1").disabled=true
+    }
+  }
+
+  function onChangeAll(element){
+      if (document.getElementById("checkboxAll").checked == true)
+        { for (elem of document.getElementsByName("idAccount"))
+          {elem.checked = true}}
+      else
+      { for (elem of document.getElementsByName("idAccount"))
+          {elem.checked = false}}
+      onChange(element)
+    }
+    
+
+  </script>
+  
+  {% endblock script%} 
+

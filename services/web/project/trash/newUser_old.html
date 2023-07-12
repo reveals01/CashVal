@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container border fluid mw-100 vh-100">
+  
+  {% with title="Création d'un utilisateur" %}
+      {% include "title.html" %}
+  {% endwith %}
+    
+  <div class="row" style="height: 5px"></div>
+
+  {% include 'base_users.html' %}
+
+
+
+  <form method="POST" action="/newUser">
+    <input type="hidden" id="fname" name="fname" value="newUser">  
+    <div class="row"></div>
+    <div class="row pb-3">
+      <div class="col-md-2"></div>
+      <div class="col">       
+        <div class="row input-group mb-3">
+          <span class="input-group-text col-3" id="name">Nom : </span>
+          <input type="text" name="name" class="form-control" aria-label=" {{ oneUser['name'] }} " aria-describedby=" {{ oneUser['name'] }} " >
+        </div>
+        <div class="row input-group mb-3">
+          <span class="input-group-text col-3" >Prenom :</span>
+          <input id="surname" name="surname" type="text" class="form-control" aria-label="  {{ oneUser['surname'] }}  " aria-describedby="">
+        </div>
+        <div class="row input-group mb-3">
+          <span class="input-group-text col-3" >Email :</span>
+          <input id="email" name="email"  type="text" class="form-control" aria-label="  {{ oneUser['email'] }}  " aria-describedby="">
+        </div>
+        <div class="row input-group mb-3">
+          <span class="input-group-text col-3" >Mot de passe :</span>
+          <input id="password" name="password" type="password" class="form-control" aria-label="" aria-describedby="">
+        </div>
+
+        <div class="row input-group mb-3">
+          <label class="input-group-text col-3" for="inputGroupSelect01">Role :</label>
+          <select class="form-select col-6" id="role" name="role">
+            <option selected>Sélectionner...</option>
+            <option value="ADMIN">ADMIN</option>
+            <option value="RISK">RISK</option>
+            <option value="FRONT">FRONT<form class="d-flex">
+            </form></option>
+          </select>
+        </div>
+        
+        <div class="row input-group p-0 ">
+          <div class="col text-end p-0 ">
+           <button type="submit" class="btn btn-primary mb-2 col-3">Créer</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4"></div>
+    </div>
+  
+  </form>
+  
+  </div>
+  
+  
+  
+  
+  {% endblock %}
+  
+  
+  
+  {% block script %}
+  <script>
+  $("div").removeClass("bgimg");
+  
+  
+  </script>
+  {% endblock %}

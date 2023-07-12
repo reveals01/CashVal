@@ -1,0 +1,14 @@
+node_modules
+venv
+#add venv
+venv/
+venv*
+.DS_Store
+.env.dev
+services/.DS_Store
+services/web/.DS_Store
+services/web/input/.DS_Store
+**/~$*
+
+#ignore all files named ".DS_Store"
+**/.DS_Store

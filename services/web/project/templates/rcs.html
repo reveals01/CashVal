@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h4>Commande d'extraits RCS</h4>
+
+    
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">id Client</th>
+        <th scope="col">Reference RCS</th>
+        <th scope="col">Nom</th>
+        <th scope="col">Date dernier Extrait</th>
+        <th scope="col">Date prochain Extrait</th>
+        <th scope="col">Commande</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for client in clients %}
+        <tr>
+          <th scope="row">{{ client['idCli'] }}</th>
+          <td>{{ client['rcsnum'] }}</td>
+          <td>{{ client['tradeName'] }}</td>
+          <td>-</td>
+          <td>-</td>
+          <td><button type="submit" class="btn btn-primary" value='ok'>Commander</button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+    
+    
+</table>
+
+
+{% endblock %}
