@@ -10,6 +10,17 @@ services:
       - 5005:5000
     env_file:
       - ./.env.dev
+    networks:
+      - cashval_network 
+  
+  adminer:
+    image: adminer
+    restart: "no"
+    ports:
+      - 8081:8080
+    networks:
+      - cashval_network 
+
   db:
     image: postgres:13-alpine
     volumes:
@@ -20,7 +31,15 @@ services:
       - POSTGRES_DB=CASHVAL
     ports:
       - 5432:5432
+    networks:
+      - cashval_network 
 
 volumes:
   postgres_data:
+
+networks:
+  cashval_network:
+    ipam:
+      config:
+        - subnet: 172.60.0.0/24
 
