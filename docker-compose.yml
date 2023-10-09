@@ -18,8 +18,6 @@ services:
       - POSTGRES_USER=cashval
       - POSTGRES_PASSWORD=cashval
       - POSTGRES_DB=CASHVAL
-    ports:
-      - 5432:5432
 
 volumes:
   postgres_data:

@@ -2,7 +2,7 @@ Flask==2.2.2
 Flask-SQLAlchemy==3.0.2
 psycopg2-binary==2.9.4
 flask_login
-werkzeug
+Werkzeug==2.2.2
 pandas===1.5.3
 sqlalchemy
 flask_wtf
