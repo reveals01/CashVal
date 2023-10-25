@@ -14,13 +14,19 @@ def create_db():
 
 @cli.command("init_db")
 def init_db():
-    OneUser=User(key="david.recchia@reveals.lu",email="david.recchia@reveals.lu",
-    name="David",
+    OneUser=User(key="admin@orchestro.lu",email="admin@orchestro.lu",
+    name="Admin",
+    surname="Admin",
     role="Root",
-    password="Root")
+    password="Root",)
     db.session.add(OneUser)
+    SndUser=User(key="demo@orchestro.lu",email="demo@orchestro.lu",
+    name="Demo",
+    surname="Demo",
+    role="demo",
+    password="Demo",)
+    db.session.add(SndUser)
     db.session.commit()
-
 
 if __name__ == "__main__":
     cli()
