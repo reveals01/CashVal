@@ -18,13 +18,13 @@ def init_db():
     name="Admin",
     surname="Admin",
     role="Root",
-    password="Root",)
+    password="4rb8frUjEeAvF5",)
     db.session.add(OneUser)
     SndUser=User(key="demo@orchestro.lu",email="demo@orchestro.lu",
     name="Demo",
     surname="Demo",
     role="demo",
-    password="Demo",)
+    password="H5BmHjdh3Cp4gX",)
     db.session.add(SndUser)
     db.session.commit()
 
