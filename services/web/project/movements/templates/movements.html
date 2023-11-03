@@ -169,7 +169,24 @@
   // Initialize the datatable
   var table = $('#cashMovementTable').DataTable({
     dom: 'Bfltip',
-    buttons: ['copy', 'csv', 'pdf'],
+    buttons: [{
+                extend: 'copyHtml5',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                }
+            },
+            {
+                extend: 'excelHtml5',
+                exportOptions: {
+                  columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                }
+            }],
     columnDefs: [
       // Column 5: Amount (formatting and alignment)
       {

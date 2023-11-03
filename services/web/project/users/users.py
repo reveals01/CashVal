@@ -23,7 +23,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         login_user(user)
-        return redirect(url_for('users.user'))
+        return redirect(url_for('clients.clients'))
         
     return render_template('login.html', title='Sign In', form=form)
 

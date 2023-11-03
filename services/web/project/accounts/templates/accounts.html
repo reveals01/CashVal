@@ -105,7 +105,24 @@
       { visible: false, targets: groupByFieldIndex } // hide the grouping column
     ],
     dom: 'Bfltip',
-    buttons: ['copy', 'csv', 'pdf'],
+    buttons: [{
+                extend: 'copyHtml5',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                }
+            },
+            {
+                extend: 'excelHtml5',
+                exportOptions: {
+                  columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                }
+            }],
     "oSearch": {"sSearch": "{{ selected }}"},
 
     // use rowGroup for grouping and order for sorting

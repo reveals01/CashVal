@@ -85,7 +85,24 @@
     { orderable: false, targets:[0,1] }
     ],
     dom: 'Bfltip',
-    buttons: ['copy', 'csv', 'pdf'],
+    buttons: [{
+                extend: 'copyHtml5',
+                exportOptions: {
+                    columns: [2, 3, 4, 5, 6, 7, 8]
+                }
+            },
+            {
+                extend: 'excelHtml5',
+                exportOptions: {
+                  columns: [2, 3, 4, 5, 6, 7, 8]
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                exportOptions: {
+                    columns: [2, 3, 4, 5, 6, 7, 8]
+                }
+            }],
     "oSearch": {"sSearch": "{{ selected }}"},
     
 
